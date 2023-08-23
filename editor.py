@@ -66,6 +66,17 @@ def edit_cat(cat: dict, index: int, cats_list: list):
     elif ty == list:
         cats_list[index][key] = list(value)
 
+def edit_cat_value(index: int, cats_list: list, key: int, value):
+    """ Function to edit cat dict """
+    os.system("cls")
+    ty = type(cats_list[index][key])
+    if ty == str:
+        pass
+    elif ty == int:
+        cats_list[index][key] = int(value)
+    elif ty == list:
+        cats_list[index][key] = list(value)
+
 options = ["edit clan", "manual edit", "quick revive", "quick kill", "kill random", "edit relationships", "change settings"]
 for x, o in enumerate(options):
     print(f"[{x}] - {o}")
@@ -113,8 +124,24 @@ elif special == 0: # Edit Clan
     pass
 elif special == 6: # Edit settings
     with open(settingsLocation, encoding="utf-8") as s:
+        keys = []
         settings = {}
         lines = s.readlines()
         for l in lines:
-            lineSplit = l.split(":")
-            settings.update({lineSplit[0], lineSplit[1]})
+            lineSplit = l.strip().split(":")
+            if len(lineSplit) == 2:  # Ensure there are exactly two elements after splitting
+                key, value = lineSplit
+                settings[key] = value
+    for x, k in enumerate(settings.keys()):
+        keys.append(k)
+        print(f"[{x}] " + k + ": " + settings[k])
+    select = int(input("Enter the number of the item you want to change: "))
+    value = input("Enter the value you want to insert: ")
+    pair = {keys[select], value}
+    settings.update(pair)
+    lines = []
+    for x, k in enumerate(settings.keys()):
+        line = f"{k}:{settings[k]}"
+        lines.append(line)
+    with open(settingsLocation, encoding="utf-8") as s:
+        s.writelines(lines)
